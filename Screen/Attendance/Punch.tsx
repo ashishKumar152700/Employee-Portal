@@ -5,17 +5,15 @@ import * as Location from 'expo-location';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { punchService } from '../../Services/Punch.service';
+import { punchService } from '../../Services/Punch/Punch.service';
 
 const { width, height } = Dimensions.get('window');
 
-// Responsive function for font size
 const scaleFont = (size :any) => {
-  const scale = width / 375; // Assuming 375 is the base screen width (iPhone X)
+  const scale = width / 375; 
   return Math.round(size * scale);
 };
 
-// Responsive function for layout sizes
 const scaleSize = (size :any) => {
   const scale = width / 375; 
   return Math.round(size * scale);
@@ -113,7 +111,6 @@ const PunchScreen: React.FC = () => {
     if (!hasPermission) return;
 
     let location = await Location.getCurrentPositionAsync({});
-    console.log('User location:', location);
     return location;
   };
 
@@ -126,15 +123,14 @@ const PunchScreen: React.FC = () => {
       setClockOutTime(null);
       setTotalTime(null);
       setClockInDate(now);
-      // console.log('Clock In:', now.toLocaleTimeString(), 'Location:', location);
-
-      // Alert.alert(
-      //   'Success',
-      //   `You have successfully clocked in at ${now.toLocaleTimeString()}.`,
-      //   [{ text: 'OK', onPress: () => console.log('Alert closed') }]
-      // );
-      
-      punchService.PunchIn(location);
+      try {
+        // Call the Punch In API
+        await punchService.PunchInApi(location); 
+        Alert.alert('Success', `You have successfully clocked in at ${now.toLocaleTimeString()}.`);
+      } catch (error) {
+        console.error('Punch In Error:', error);
+        Alert.alert('Error', 'An error occurred while clocking in.');
+      }
     }
     setIsClockInLoading(false);
   };
@@ -145,30 +141,23 @@ const PunchScreen: React.FC = () => {
       return;
     }
     setIsClockOutLoading(true);
-    try {
-      const location = await getLocation();
-      if (location) {
-        const now = new Date();
-        setClockOutTime(now.toLocaleTimeString());
-        if (clockInDate) {
-          const timeDiff = Math.abs(now.getTime() - clockInDate.getTime());
-          const hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
-          const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
-          setTotalTime(`${hours}h ${minutes}m`);
-        }
-        console.log('Clock Out:', now.toLocaleTimeString(), 'Location:', location);
-
-        Alert.alert(
-          'Success',
-          `You have successfully clocked out at ${now.toLocaleTimeString()}.`,
-          [{ text: 'OK', onPress: () => console.log('Alert closed') }]
-        );
-      } else {
-        Alert.alert('Location Error', 'Failed to retrieve your location.');
+    const location = await getLocation();
+    if (location) {
+      const now = new Date();
+      setClockOutTime(now.toLocaleTimeString());
+      if (clockInDate) {
+        const timeDiff = Math.abs(now.getTime() - clockInDate.getTime());
+        const hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+        setTotalTime(`${hours}h ${minutes}m`);
       }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while clocking out.');
-      console.error(error);
+      try {
+        await punchService.PunchOutApi(location); 
+        Alert.alert('Success', `You have successfully clocked out at ${now.toLocaleTimeString()}.`);
+      } catch (error) {
+        console.error('Punch Out Error:', error);
+        Alert.alert('Error', 'An error occurred while clocking out.');
+      }
     }
     setIsClockOutLoading(false);
   };

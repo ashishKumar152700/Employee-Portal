@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert, Dimensions, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert, Dimensions, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RFPercentage } from 'react-native-responsive-fontsize'; // Responsive Font Scaling
-import { baseUrl } from '../../Global/Config';
-import { RootStackParamList } from '../../Global/Types'; 
+import { RFPercentage } from 'react-native-responsive-fontsize'; 
+import { RootStackParamList } from '../../Global/types'; 
 import { StackNavigationProp } from '@react-navigation/stack';
-
+import { loginservice } from '../../Services/Login/Login.service';
 
 const { width, height } = Dimensions.get('window'); 
 
@@ -18,46 +16,39 @@ type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LoginS
 const LoginScreen = () => {
   const [employeecode, setemployeecode] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const handleLogin = async () => {
-        navigation.navigate('RKT Portal');
+    if (!employeecode || !password) {
+      Alert.alert('Error', 'Employee code and password are required');
+      return;
+    }
 
-    // // Input validation to check if username and password are provided
-    // if (!employeecode.trim() || !password.trim()) {
-    //   Alert.alert('Validation Failed', 'Please enter both username and password.');
-    //   return; // Exit the function if validation fails
-    // }
-  
-    // try {
-    //   console.log(employeecode);
-    //   console.log(password);
-  
-    //   // Proceed with the login request
-    //   const response = await axios.post(`${baseUrl}/api/v1/auth/login`, {
-    //     employeecode: +employeecode,
-    //     password: password,
-    //   }, {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   });
-  
-    //   console.log(response);
-  
-    //   if (response.data.status === 200) {
-    //     await AsyncStorage.setItem('accessToken', response.data.data.accessToken);
-    //     console.log('Access Token:', response.data.data.accessToken);
-    //     navigation.navigate('RKT Portal');
-    //   } else {
-    //     Alert.alert('Login Failed', response.data.message);
-    //   }
-    // } catch (error) {
-    //   console.error('Login Error:', error);
-    //   Alert.alert('Login Failed', 'Please check your credentials and try again.');
-    // }
+    setLoading(true); // Start loader
+
+    let postData = {
+      employeecode: +employeecode,
+      password,
+    };
+
+    try {
+      const response = await loginservice.LoginApi(postData);
+      console.log(response);
+
+      if (response.status === 200) {
+        await AsyncStorage.setItem('token', response.data.accessToken);
+        navigation.navigate('Main');
+      } else {
+        Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Login Error', 'Something went wrong. Please try again.');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false); // Stop loader
+    }
   };
-  
 
   return (
     <LinearGradient colors={['rgb(0, 41, 87)', 'white']} style={styles.container}>
@@ -95,12 +86,17 @@ const LoginScreen = () => {
               outlineColor="rgb(0, 41, 87)"
               theme={{ colors: { background: 'white' } }}
             />
-            
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
 
-            {/* Added Forgot Password and Other Options */}
+            {/* Show loader while logging in */}
+            {loading ? (
+              <ActivityIndicator size="large" color="rgb(0, 41, 87)" style={{ marginVertical: 20 }} />
+            ) : (
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Forgot Password and Other Options */}
             <View style={styles.footerContainer}>
               <TouchableOpacity onPress={() => Alert.alert('Forgot Password')}>
                 <Text style={styles.footerLink}>Forgot Password?</Text>
@@ -108,9 +104,6 @@ const LoginScreen = () => {
             </View>
           </View>
         </ScrollView>
-        {/* <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2024 Your Company. All Rights Reserved.</Text>
-        </View> */}
       </KeyboardAvoidingView>
     </LinearGradient>
   );
@@ -127,9 +120,9 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 60 : 20,
   },
   card: {
-    width: '90%', // Set width in percentage to adapt to various screen sizes
-    paddingVertical: height * 0.025, // Dynamic vertical padding based on screen height (2.5%)
-    paddingHorizontal: width * 0.05, // Dynamic horizontal padding based on screen width (5%)
+    width: '90%',
+    paddingVertical: height * 0.025,
+    paddingHorizontal: width * 0.05,
     borderRadius: 12,
     elevation: 5,
     backgroundColor: 'white',
@@ -140,9 +133,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     marginTop: 40,
   },
-  
   logo: {
-    width: width * 0.4, // Scaled width for responsiveness
+    width: width * 0.4,
     height: width * 0.4,
     marginBottom: 20,
   },
@@ -151,12 +143,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   welcomeText: {
-    fontSize: RFPercentage(3), // Responsive font size
+    fontSize: RFPercentage(3),
     fontWeight: 'bold',
     color: 'rgb(0, 41, 87)',
   },
   portalText: {
-    fontSize: RFPercentage(2.5), // Responsive font size
+    fontSize: RFPercentage(2.5),
     color: '#555',
     textAlign: 'center',
     marginTop: 5,
@@ -176,7 +168,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: RFPercentage(2.2), // Responsive font size
+    fontSize: RFPercentage(2.2),
     fontWeight: '600',
   },
   footerContainer: {
@@ -185,18 +177,9 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     color: 'rgb(0, 41, 87)',
-    fontSize: RFPercentage(2), // Responsive font size
+    fontSize: RFPercentage(2),
     marginVertical: 5,
     textDecorationLine: 'underline',
-  },
-  footer: {
-    marginTop: 20,
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  footerText: {
-    fontSize: RFPercentage(2), // Responsive font size
-    color: '#777',
   },
 });
 

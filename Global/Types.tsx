@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // Define the stack parameter list
 export type RootStackParamList = {
   LoginScreen: undefined;
-  'RKT Portal': undefined;
+  Main: undefined;
 };
 
 // Type for navigation prop

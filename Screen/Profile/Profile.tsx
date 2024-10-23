@@ -48,11 +48,11 @@ const Profile = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Profile</Text>
 
-      {/* Profile Picture */}
-      <Image
-        source={require('../../assets/profile.png')} // Ensure you have the correct file extension
+     
+      {/* <Image
+        source={require('../../assets/profile.png')}
         style={styles.profilePicture}
-      />
+      /> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Profile Information */}

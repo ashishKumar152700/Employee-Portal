@@ -1,39 +1,22 @@
-  import React from 'react';
-  import { NavigationContainer } from '@react-navigation/native';
-  import { createStackNavigator } from '@react-navigation/stack';
-  import LoginScreen from './Screens/Login/Login';
-  import PunchScreen from './Screens/PunchModule/PunchScreen';
-  import { StatusBar } from 'expo-status-bar';
-  import { Dimensions, PixelRatio, useWindowDimensions } from 'react-native';
-  import BottomNav from './Component/BottomNav/BottomTab';
-  import Header from './Global/Header'; // Import the Custom Header
 
-  const Stack = createStackNavigator();
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import LoginScreen from './Screen/Login/Login'; 
+import DrawerNavigator from './Component/Drawer/Drawer'; 
 
-  const normalizeFontSize = (size: any, fontScale: any) => {
-    return Math.round(size * fontScale); 
-  };
+const Stack = createStackNavigator();
 
-  export default function App() {
-
-
-    return (
+export default function App() {
+  return (
+    <SafeAreaView style={{ flex: 1 }}> 
       <NavigationContainer>
-        <StatusBar style="light" backgroundColor="black" />
-        <Stack.Navigator initialRouteName="LoginScreen">
-          <Stack.Screen 
-            name="LoginScreen" 
-            options={{ headerShown: false }} 
-            component={LoginScreen} 
-          />
-          <Stack.Screen 
-            name="RKT Portal" 
-            component={BottomNav} 
-            options={{
-              headerShown:true
-            }} 
-          />
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Main" component={DrawerNavigator} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
-    );
-  }
+    </SafeAreaView>
+  );
+}

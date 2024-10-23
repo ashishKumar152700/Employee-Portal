@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Agenda } from 'react-native-calendars';
-import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Card } from 'react-native-paper';
 
 type Item = {
   name: string;
