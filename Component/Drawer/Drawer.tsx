@@ -1,10 +1,10 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { SafeAreaView } from 'react-native-safe-area-context'; 
 import BottomTabNavigator from '../BottomNav/BottomNav'; 
-import CustomDrawerContent from './DrawerContnet'; // Import your custom content
-import BottomTabNavLM from '../BottomNav/BottomNavForLM';
+import CustomDrawerContent from './DrawerContnet'; 
 import { View } from 'react-native';
+import BottomTabNavLeave from '../BottomNav/BottomNavForLeave';
+import MyLeaveScreen from '../../Screen/MyLeave/MyLeaveScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,7 +15,8 @@ function DrawerNavigator() {
         initialRouteName='Attendance'
         drawerContent={(props) => <CustomDrawerContent {...props} />}>
         <Drawer.Screen  name="Attendance" component={BottomTabNavigator} /> 
-        <Drawer.Screen  name="LeaveManagement" component={BottomTabNavLM} /> 
+        {/* <Drawer.Screen  name="MyLeave" component={BottomTabNavLeave} />  */}
+        <Drawer.Screen  name="MyLeave" component={MyLeaveScreen} /> 
       </Drawer.Navigator>
     </View>
   );

@@ -5,14 +5,15 @@ import Profile from '../../Screen/Profile/Profile';
 import Schedule from '../../Screen/Calander/Calander';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LeaveManagement from '../../Screen/LeaveManagement/LeaveManagement'
+import MyLeaveScreen from '../../Screen/MyLeave/MyLeaveScreen';
 const Tab = createBottomTabNavigator();
 
-function BottomTabNavLM() {
+function BottomTabNavLeave() {
   return (
     <Tab.Navigator>
       <Tab.Screen 
-        name="LeaveManagement" 
-        component={LeaveManagement} 
+        name="MyLeaveScreen" 
+        component={MyLeaveScreen} 
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -20,7 +21,7 @@ function BottomTabNavLM() {
           ),
         }}
       />
-      <Tab.Screen 
+      {/* <Tab.Screen 
         name="Calender" 
         component={Schedule} 
         options={{
@@ -29,10 +30,10 @@ function BottomTabNavLM() {
             <Icon name="calendar" color={color} size={25} /> 
           ),
         }} 
-      />
+      /> */}
      
     </Tab.Navigator>
   );
 }
 
-export default BottomTabNavLM;
+export default BottomTabNavLeave;
