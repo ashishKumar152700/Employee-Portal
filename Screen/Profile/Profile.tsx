@@ -1,19 +1,19 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, ScrollView, Dimensions } from 'react-native';
 import React, { useState } from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the Material Icons
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const { width, height } = Dimensions.get('window'); // Get device dimensions
+const { width, height } = Dimensions.get('window');
 
-// Function to scale sizes
-const scaleSize = (size : any) => (width / 375) * size; // Based on standard width (375 for iPhone 11)
+// Function to scale sizes based on device width
+const scaleSize = (size:any) => (width / 375) * size;
 
 const Profile = () => {
-  const [modalVisible, setModalVisible] = useState(false); // State for showing/hiding the modal
-  const [passwordModalVisible, setPasswordModalVisible] = useState(false); // State for change password modal
-  const [currentField, setCurrentField] = useState(''); // Field currently being edited
-  const [currentValue, setCurrentValue] = useState(''); // Current value of the field
-  const [oldPassword, setOldPassword] = useState(''); // Old password
-  const [newPassword, setNewPassword] = useState(''); // New password
+  const [modalVisible, setModalVisible] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [currentField, setCurrentField] = useState('');
+  const [currentValue, setCurrentValue] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   const profileData = {
     name: 'John Doe',
@@ -24,20 +24,18 @@ const Profile = () => {
     reporting: 'Jane Smith',
   };
 
-  const handleEdit = (field:any, value :any) => {
+  const handleEdit = (field:any, value:any) => {
     setCurrentField(field);
     setCurrentValue(value);
     setModalVisible(true);
   };
 
   const handleSubmit = () => {
-    // Handle the logic to update the specific field here
     console.log(`${currentField}: ${currentValue}`);
     setModalVisible(false);
   };
 
   const handleChangePassword = () => {
-    // Handle the logic to change the password here
     console.log(`Old Password: ${oldPassword}, New Password: ${newPassword}`);
     setOldPassword('');
     setNewPassword('');
@@ -48,50 +46,31 @@ const Profile = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Profile</Text>
 
-     
-      {/* <Image
-        source={require('../../assets/profile.png')}
-        style={styles.profilePicture}
-      /> */}
-
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Profile Information */}
         {Object.entries(profileData).map(([key, value]) => (
           <View style={styles.profileInfo} key={key}>
-            <Text style={styles.label}>{key.charAt(0).toUpperCase() + key.slice(1)}:</Text>
-            <Text style={styles.info}>{value}</Text>
-            <TouchableOpacity
-              onPress={() => handleEdit(key, value)} // Open modal for editing
-              style={styles.iconButton}
-            >
+            <View>
+              <Text style={styles.label}>{key.charAt(0).toUpperCase() + key.slice(1)}:</Text>
+              <Text style={styles.info}>{value}</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleEdit(key, value)} style={styles.iconButton}>
               <Icon name="edit" size={scaleSize(24)} color="#007bff" />
             </TouchableOpacity>
           </View>
         ))}
-        
-        {/* Change Password Button */}
+
         <TouchableOpacity onPress={() => setPasswordModalVisible(true)} style={styles.changePasswordButton}>
           <Text style={styles.changePasswordText}>Change Password</Text>
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Modal for editing profile information */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+      {/* Edit Modal */}
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <Text style={styles.modalHeader}>Edit {currentField.charAt(0).toUpperCase() + currentField.slice(1)}</Text>
 
-            <TextInput
-              placeholder={`Enter new ${currentField}`}
-              style={styles.input}
-              value={currentValue}
-              onChangeText={setCurrentValue}
-            />
+            <TextInput placeholder={`Enter new ${currentField}`} style={styles.input} value={currentValue} onChangeText={setCurrentValue} />
 
             <View style={styles.modalActions}>
               <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
@@ -105,31 +84,14 @@ const Profile = () => {
         </View>
       </Modal>
 
-      {/* Modal for changing password */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={passwordModalVisible}
-        onRequestClose={() => setPasswordModalVisible(false)}
-      >
+      {/* Change Password Modal */}
+      <Modal animationType="slide" transparent={true} visible={passwordModalVisible} onRequestClose={() => setPasswordModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <Text style={styles.modalHeader}>Change Password</Text>
 
-            <TextInput
-              placeholder="Enter old password"
-              secureTextEntry
-              style={styles.input}
-              value={oldPassword}
-              onChangeText={setOldPassword}
-            />
-            <TextInput
-              placeholder="Enter new password"
-              secureTextEntry
-              style={styles.input}
-              value={newPassword}
-              onChangeText={setNewPassword}
-            />
+            <TextInput placeholder="Enter old password" secureTextEntry style={styles.input} value={oldPassword} onChangeText={setOldPassword} />
+            <TextInput placeholder="Enter new password" secureTextEntry style={styles.input} value={newPassword} onChangeText={setNewPassword} />
 
             <View style={styles.modalActions}>
               <TouchableOpacity onPress={handleChangePassword} style={styles.submitButton}>
@@ -150,121 +112,120 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: scaleSize(20),
-    backgroundColor: '#f8f9fa', // Light background color
+    backgroundColor: '#f2f3f8',
   },
   header: {
-    fontSize: scaleSize(24),
+    fontSize: scaleSize(26),
     fontWeight: 'bold',
-    color: '#333', // Dark text color for contrast
+    color: '#002957',
     marginBottom: scaleSize(20),
     textAlign: 'center',
   },
-  profilePicture: {
-    width: scaleSize(100),
-    height: scaleSize(100),
-    borderRadius: scaleSize(50), // Circular image
-    alignSelf: 'center',
-    marginBottom: scaleSize(20),
-  },
   scrollContainer: {
-    flexGrow: 1, // Ensure content is scrollable
+    flexGrow: 1,
   },
   profileInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // Align items vertically centered
+    alignItems: 'center',
     padding: scaleSize(15),
-    marginVertical: scaleSize(8),
-    borderRadius: scaleSize(5),
-    backgroundColor: '#ffffff', // White background for each info block
+    marginVertical: scaleSize(10),
+    borderRadius: scaleSize(10),
+    backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: scaleSize(2),
-    elevation: 1, // For Android shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   label: {
     fontSize: scaleSize(16),
     fontWeight: '600',
-    color: '#555', // Medium grey for labels
+    color: '#555',
+    marginBottom: 5,
   },
   info: {
     fontSize: scaleSize(16),
-    color: '#333', // Dark text for info
+    fontWeight: '500',
+    color: '#333',
   },
   iconButton: {
     padding: scaleSize(5),
   },
   changePasswordButton: {
-    backgroundColor: 'rgb(0, 41, 87)', // Button color
-    padding: scaleSize(10),
-    borderRadius: scaleSize(5),
+    backgroundColor: 'rgb(0, 41, 87)',
+    paddingVertical: scaleSize(12),
+    borderRadius: scaleSize(10),
     alignItems: 'center',
     marginTop: scaleSize(20),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 6,
   },
   changePasswordText: {
     color: '#fff',
     fontSize: scaleSize(16),
+    fontWeight: '600',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#fff',
     borderRadius: scaleSize(10),
     padding: scaleSize(20),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: scaleSize(4),
+    shadowRadius: 4,
     elevation: 5,
   },
   modalHeader: {
     fontSize: scaleSize(20),
     fontWeight: 'bold',
-    marginBottom: scaleSize(20),
+    marginBottom: scaleSize(15),
     textAlign: 'center',
   },
   input: {
-    height: scaleSize(40),
-    borderColor: '#ccc',
+    height: scaleSize(45),
+    borderColor: '#ddd',
     borderWidth: 1,
-    borderRadius: scaleSize(5),
-    paddingHorizontal: scaleSize(10),
+    borderRadius: scaleSize(8),
+    paddingHorizontal: scaleSize(12),
     marginBottom: scaleSize(15),
   },
   modalActions: {
-    flexDirection: 'row', // Align buttons in a row
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%', // Full width
   },
   submitButton: {
-    backgroundColor: 'rgb(0, 41, 87)', // Submit button color
-    padding: scaleSize(10),
-    borderRadius: scaleSize(5),
-    flex: 1, // Grow to take available space
-    marginRight: scaleSize(5), // Space between buttons
+    backgroundColor: 'rgb(0, 41, 87)',
+    padding: scaleSize(12),
+    borderRadius: scaleSize(8),
+    flex: 1,
+    marginRight: scaleSize(5),
   },
   submitButtonText: {
     color: '#fff',
     textAlign: 'center',
+    fontWeight: '600',
   },
   cancelButton: {
-    backgroundColor: '#ccc', // Cancel button color
-    padding: scaleSize(10),
-    borderRadius: scaleSize(5),
-    flex: 1, // Grow to take available space
-    marginLeft: scaleSize(5), // Space between buttons
+    backgroundColor: '#ccc',
+    padding: scaleSize(12),
+    borderRadius: scaleSize(8),
+    flex: 1,
+    marginLeft: scaleSize(5),
   },
   cancelButtonText: {
     textAlign: 'center',
+    fontWeight: '600',
   },
 });
 

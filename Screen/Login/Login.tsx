@@ -16,7 +16,7 @@ type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LoginS
 const LoginScreen = () => {
   const [employeecode, setemployeecode] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const handleLogin = async () => {
@@ -24,31 +24,29 @@ const LoginScreen = () => {
       Alert.alert('Error', 'Employee code and password are required');
       return;
     }
-
-    setLoading(true); // Start loader
-
+  
+    setLoading(true); 
+  
     let postData = {
       employeecode: +employeecode,
       password,
     };
-
+  
     try {
       const response = await loginservice.LoginApi(postData);
       console.log(response);
-
+  
       if (response.status === 200) {
         await AsyncStorage.setItem('token', response.data.accessToken);
         navigation.navigate('Main');
-      } else {
-        Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
       }
-    } catch (error) {
-      Alert.alert('Login Error', 'Something went wrong. Please try again.');
-      console.error('Login error:', error);
+    } catch (error: any) {
+      Alert.alert('Login Failed', error.message);
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false); 
     }
   };
+  
 
   return (
     <LinearGradient colors={['rgb(0, 41, 87)', 'white']} style={styles.container}>

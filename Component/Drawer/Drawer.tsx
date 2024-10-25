@@ -13,10 +13,15 @@ function DrawerNavigator() {
     <View style={{ flex: 1 }}> 
       <Drawer.Navigator 
         initialRouteName='Attendance'
+
         drawerContent={(props) => <CustomDrawerContent {...props} />}>
         <Drawer.Screen  name="Attendance" component={BottomTabNavigator} /> 
-        {/* <Drawer.Screen  name="MyLeave" component={BottomTabNavLeave} />  */}
-        <Drawer.Screen  name="MyLeave" component={MyLeaveScreen} /> 
+        {<Drawer.Screen  name="MyLeave" component={BottomTabNavLeave} /> }
+<!--         <Drawer.Screen  name="MyLeave" component={MyLeaveScreen} />  -->
+<!--         drawerContent={(props) => <CustomDrawerContent {...props} />} // Use custom drawer content -->
+      
+<!--         <Drawer.Screen name="Employee Portal" component={BottomTabNavigator} />  -->
+
       </Drawer.Navigator>
     </View>
   );

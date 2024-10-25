@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Card } from 'react-native-paper';
+import { calendarservice } from '../../Services/Calendar/Calendar.service';
 
 type Item = {
   name: string;
@@ -12,12 +13,10 @@ type Item = {
   totalTime?: string;
 };
 
-// Preload the icon font to avoid delay
 const MemoizedIcon = React.memo(({ name, size, color }: { name: string, size: number, color: string }) => (
   <Icon name={name} size={size} color={color} />
 ));
 
-// Memoized Card Component
 const MemoizedCard = React.memo(({ item }: { item: Item }) => (
   <Card style={styles.card}>
     <Card.Content>
@@ -51,6 +50,10 @@ const MemoizedCard = React.memo(({ item }: { item: Item }) => (
 
 const Schedule: React.FC = () => {
   const [items, setItems] = useState<{ [key: string]: Item[] }>({});
+  const [selectedDate, setSelectedDate] = useState<string>(''); // State for selected date
+  const today = timeToString(Date.now());
+
+  let data: any;
 
   useEffect(() => {
     Icon.loadFont(); // Preload icons to optimize loading
@@ -61,13 +64,13 @@ const Schedule: React.FC = () => {
     const [outHours, outMinutes] = punchOut.split(':').map(Number);
 
     if (isNaN(inHours) || isNaN(inMinutes) || isNaN(outHours) || isNaN(outMinutes)) {
-      return '0.00'; // Return 0 if any time is invalid
+      return '0.00';
     }
 
     const totalHours = outHours - inHours;
     const totalMinutes = outMinutes - inMinutes;
     const totalTimeInHours = totalHours + totalMinutes / 60;
-    return totalTimeInHours.toFixed(2); // Format to two decimal places
+    return totalTimeInHours.toFixed(2); 
   }, []);
 
   const loadItems = useCallback((day: any) => {
@@ -79,7 +82,7 @@ const Schedule: React.FC = () => {
         if (time <= today) {
           const strTime = timeToString(time);
           if (!items[strTime]) {
-            const isPresent = Math.random() > 0.5; // Random 50% chance of presence
+            const isPresent = Math.random() > 0.5;
             const punchInTime = isPresent ? '09:00 AM' : '';
             const punchOutTime = isPresent ? '05:00 PM' : '';
             const totalTime = isPresent ? calculateTotalTime(punchInTime, punchOutTime) : '';
@@ -99,7 +102,31 @@ const Schedule: React.FC = () => {
 
   const renderItem = useCallback((item: Item) => <MemoizedCard item={item} />, []);
 
-  const today = timeToString(Date.now());
+  // Function to format the date as mm/dd/yyyy
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-');
+    return `${month}/${day}/${year}`;
+  };
+
+ // Assuming you have formatDate function defined somewhere
+const handleDayPress = async (day: { dateString: string }) => {
+  try {
+    const formattedSelectedDate = formatDate(day.dateString);
+    const formattedCurrentDate = formatDate(today);
+
+    setSelectedDate(formattedSelectedDate);
+
+    console.log('Selected Date:', formattedSelectedDate);
+    console.log('Current Date:', formattedCurrentDate);
+
+    const data = await calendarservice.CalendarGet(formattedSelectedDate, formattedCurrentDate);
+
+    console.log('Retrieved Data:', data);
+  } catch (error) {
+    console.error('Error fetching calendar data:', error instanceof Error ? error.message : error);
+  }
+};
+
 
   return (
     <View style={styles.container}>
@@ -108,6 +135,7 @@ const Schedule: React.FC = () => {
         loadItemsForMonth={loadItems}
         selected={today}
         renderItem={renderItem}
+        onDayPress={handleDayPress} // Add this line
         minDate={'2022-01-01'}
         maxDate={today}
         theme={{
