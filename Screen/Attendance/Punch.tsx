@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, ActivityIndicator, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -216,18 +217,23 @@ const PunchScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgrey',
+    // backgroundColor: 'rgb(0, 41, 87)',
+    backgroundColor:'lightgrey' ,
+    // backgroundColor: '#133E87',
     padding: scaleSize(13),
     alignItems: 'center',
+    paddingBottom: scaleSize(75) ,
   },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: scaleSize(10),
+    // backgroundColor: '#CBDCEB',
+    borderRadius: 50,
     elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },

@@ -1,21 +1,29 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { SafeAreaView } from 'react-native-safe-area-context'; 
 import BottomTabNavigator from '../BottomNav/BottomNav'; 
-import CustomDrawerContent from './DrawerContnet'; // Import your custom content
+import CustomDrawerContent from './DrawerContnet'; 
+import { View } from 'react-native';
+import BottomTabNavLeave from '../BottomNav/BottomNavForLeave';
+import MyLeaveScreen from '../../Screen/MyLeave/MyLeaveScreen';
 
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
   return (
-    <SafeAreaView style={{ flex: 1 }}> 
+    <View style={{ flex: 1 }}> 
       <Drawer.Navigator 
         initialRouteName='Attendance'
-        drawerContent={(props) => <CustomDrawerContent {...props} />} // Use custom drawer content
-      >
-        <Drawer.Screen name="Employee Portal" component={BottomTabNavigator} /> 
+
+        drawerContent={(props) => <CustomDrawerContent {...props} />}>
+        <Drawer.Screen  name="Attendance" component={BottomTabNavigator} /> 
+        {<Drawer.Screen  name="MyLeave" component={BottomTabNavLeave} /> }
+<!--         <Drawer.Screen  name="MyLeave" component={MyLeaveScreen} />  -->
+<!--         drawerContent={(props) => <CustomDrawerContent {...props} />} // Use custom drawer content -->
+      
+<!--         <Drawer.Screen name="Employee Portal" component={BottomTabNavigator} />  -->
+
       </Drawer.Navigator>
-    </SafeAreaView>
+    </View>
   );
 }
 

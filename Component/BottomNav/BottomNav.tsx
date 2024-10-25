@@ -9,14 +9,14 @@ const Tab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{tabBarStyle:{backgroundColor:'white',borderRadius:30, overflow:'hidden',marginHorizontal:10 , marginBottom:10 , height:68 , display:'flex' , justifyContent:'space-between' ,paddingBottom:8 , flexDirection:'row' , position: "absolute"}}}>
       <Tab.Screen 
         name="Punch" 
         component={PunchScreen} 
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Icon name="pencil" color={color} size={25} /> 
+            <Icon name="pencil" color={color} size={28} /> 
           ),
         }}
       />
@@ -26,7 +26,7 @@ function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Icon name="calendar" color={color} size={25} /> 
+            <Icon name="calendar" color={color} size={28} /> 
           ),
         }} 
       />
@@ -36,7 +36,7 @@ function BottomTabNavigator() {
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Icon name="user" color={color} size={25} /> 
+            <Icon name="user" color={color} size={28} /> 
           ),
         }} 
       />
