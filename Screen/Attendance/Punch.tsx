@@ -117,29 +117,34 @@ const PunchScreen: React.FC = () => {
   const handleClockIn = async () => {
     setIsClockInLoading(true);
     const location = await getLocation();
+    
     if (location) {
       const now = new Date();
-      setClockInTime(now.toLocaleTimeString());
       setClockOutTime(null);
       setTotalTime(null);
       setClockInDate(now);
+      
       try {
-        // Call the Punch In API
-        await punchService.PunchInApi(location); 
-        Alert.alert('Success', `You have successfully clocked in at ${now.toLocaleTimeString()}.`);
+        const response = await punchService.PunchInApi(location);
+        
+        if (response.message === 'Already Puched In!') {
+          Alert.alert('Info', response.message);
+        } else {
+          setClockInTime(now.toLocaleTimeString());
+          Alert.alert('Success', response.message);
+        }
       } catch (error) {
         console.error('Punch In Error:', error);
         Alert.alert('Error', 'An error occurred while clocking in.');
       }
     }
+    
     setIsClockInLoading(false);
   };
+  
 
   const handleClockOut = async () => {
-    if (!clockInTime) {
-      Alert.alert('Clock Out Error', 'You have not clocked in yet.');
-      return;
-    }
+   
     setIsClockOutLoading(true);
     const location = await getLocation();
     if (location) {
@@ -152,10 +157,10 @@ const PunchScreen: React.FC = () => {
         setTotalTime(`${hours}h ${minutes}m`);
       }
       try {
-        await punchService.PunchOutApi(location); 
-        Alert.alert('Success', `You have successfully clocked out at ${now.toLocaleTimeString()}.`);
+       const response= await punchService.PunchOutApi(location); 
+        Alert.alert('Success', response.message);
       } catch (error) {
-        console.error('Punch Out Error:', error);
+        // console.error('Punch Out Error:', error);
         Alert.alert('Error', 'An error occurred while clocking out.');
       }
     }

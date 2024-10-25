@@ -13,7 +13,7 @@ function DrawerNavigator() {
         initialRouteName='Attendance'
         drawerContent={(props) => <CustomDrawerContent {...props} />} // Use custom drawer content
       >
-        <Drawer.Screen name="Attendance" component={BottomTabNavigator} /> 
+        <Drawer.Screen name="Employee Portal" component={BottomTabNavigator} /> 
       </Drawer.Navigator>
     </SafeAreaView>
   );

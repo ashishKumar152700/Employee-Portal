@@ -10,22 +10,24 @@ class LoginServices {
           'Content-Type': 'application/json',
         },
       });
-
-
+  
       if (response.status === 200) {
         const accessToken = response.data.data.accessToken;
-
         await AsyncStorage.setItem('accessToken', accessToken);
-
-        return response.data; 
+        return response.data;
       } else {
         throw new Error(response.data.message || 'Login failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error during login:', error); 
-      throw error; 
+      if (error.response && error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error('Something went wrong. Please try again.');
+      }
     }
   }
+  
 }
 
 export const loginservice = new LoginServices();
