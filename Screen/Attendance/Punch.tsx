@@ -212,7 +212,8 @@ const PunchScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(0, 41, 87)',
+    // backgroundColor: 'rgb(0, 41, 87)',
+    backgroundColor:'lightgrey' ,
     // backgroundColor: '#133E87',
     padding: scaleSize(13),
     alignItems: 'center',

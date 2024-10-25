@@ -9,7 +9,7 @@ class PunchServices {
         
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.post(
-        `${baseUrl}/api/v1/location/punch/in`, 
+        `${baseUrl}/api/v1/punch/in`, 
         location,
         {
           headers: {
@@ -34,7 +34,7 @@ class PunchServices {
     try {
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.patch(
-        `${baseUrl}/api/v1/location/punch/out`, 
+        `${baseUrl}/api/v1/punch/out`, 
         location, 
         {
           headers: {
