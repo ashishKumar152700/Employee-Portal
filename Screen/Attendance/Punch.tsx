@@ -280,6 +280,7 @@ const styles = StyleSheet.create({
     fontSize: scaleFont(12),
     color: 'rgb(0, 41, 87)',
     marginTop: scaleSize(4),
+ 
     fontWeight:'bold'
   },
 });

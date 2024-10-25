@@ -1,11 +1,25 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, ScrollView, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  ScrollView,
+  Dimensions,
+  Keyboard,
+  Platform,
+  TouchableWithoutFeedback,
+  SafeAreaView
+} from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the Material Icons
 
 const { width, height } = Dimensions.get('window'); // Get device dimensions
 
 // Function to scale sizes
-const scaleSize = (size : any) => (width / 375) * size; // Based on standard width (375 for iPhone 11)
+const scaleSize = (size: any) => (width / 375) * size; // Based on standard width (375 for iPhone 11)
 
 const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false); // State for showing/hiding the modal
@@ -24,7 +38,7 @@ const Profile = () => {
     reporting: 'Jane Smith',
   };
 
-  const handleEdit = (field:any, value :any) => {
+  const handleEdit = (field: any, value: any) => {
     setCurrentField(field);
     setCurrentValue(value);
     setModalVisible(true);
@@ -44,17 +58,16 @@ const Profile = () => {
     setPasswordModalVisible(false);
   };
 
+  // Function to dismiss the keyboard
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Profile</Text>
 
-     
-      {/* <Image
-        source={require('../../assets/profile.png')}
-        style={styles.profilePicture}
-      /> */}
-
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} keyboardDismissMode="on-drag">
         {/* Profile Information */}
         {Object.entries(profileData).map(([key, value]) => (
           <View style={styles.profileInfo} key={key}>
@@ -63,12 +76,14 @@ const Profile = () => {
             <TouchableOpacity
               onPress={() => handleEdit(key, value)} // Open modal for editing
               style={styles.iconButton}
+              accessible={true}
+              accessibilityLabel={`Edit ${key}`}
             >
               <Icon name="edit" size={scaleSize(24)} color="#007bff" />
             </TouchableOpacity>
           </View>
         ))}
-        
+
         {/* Change Password Button */}
         <TouchableOpacity onPress={() => setPasswordModalVisible(true)} style={styles.changePasswordButton}>
           <Text style={styles.changePasswordText}>Change Password</Text>
@@ -82,27 +97,31 @@ const Profile = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalHeader}>Edit {currentField.charAt(0).toUpperCase() + currentField.slice(1)}</Text>
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalHeader}>Edit {currentField.charAt(0).toUpperCase() + currentField.slice(1)}</Text>
 
-            <TextInput
-              placeholder={`Enter new ${currentField}`}
-              style={styles.input}
-              value={currentValue}
-              onChangeText={setCurrentValue}
-            />
+              <TextInput
+                placeholder={`Enter new ${currentField}`}
+                style={styles.input}
+                value={currentValue}
+                onChangeText={setCurrentValue}
+                autoFocus
+                accessibilityLabel={`Input new ${currentField}`}
+              />
 
-            <View style={styles.modalActions}>
-              <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
 
       {/* Modal for changing password */}
@@ -112,37 +131,41 @@ const Profile = () => {
         visible={passwordModalVisible}
         onRequestClose={() => setPasswordModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalHeader}>Change Password</Text>
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalHeader}>Change Password</Text>
 
-            <TextInput
-              placeholder="Enter old password"
-              secureTextEntry
-              style={styles.input}
-              value={oldPassword}
-              onChangeText={setOldPassword}
-            />
-            <TextInput
-              placeholder="Enter new password"
-              secureTextEntry
-              style={styles.input}
-              value={newPassword}
-              onChangeText={setNewPassword}
-            />
+              <TextInput
+                placeholder="Enter old password"
+                secureTextEntry
+                style={styles.input}
+                value={oldPassword}
+                onChangeText={setOldPassword}
+                accessibilityLabel="Input old password"
+              />
+              <TextInput
+                placeholder="Enter new password"
+                secureTextEntry
+                style={styles.input}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                accessibilityLabel="Input new password"
+              />
 
-            <View style={styles.modalActions}>
-              <TouchableOpacity onPress={handleChangePassword} style={styles.submitButton}>
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setPasswordModalVisible(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={handleChangePassword} style={styles.submitButton}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setPasswordModalVisible(false)} style={styles.cancelButton}>
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -153,21 +176,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa', // Light background color
   },
   header: {
-    fontSize: scaleSize(24),
+    fontSize: scaleSize(24), // Increased size for better readability
     fontWeight: 'bold',
     color: '#333', // Dark text color for contrast
-    marginBottom: scaleSize(20),
+    marginBottom: scaleSize(10),
+    marginTop:scaleSize(5),
     textAlign: 'center',
-  },
-  profilePicture: {
-    width: scaleSize(100),
-    height: scaleSize(100),
-    borderRadius: scaleSize(50), // Circular image
-    alignSelf: 'center',
-    marginBottom: scaleSize(20),
   },
   scrollContainer: {
     flexGrow: 1, // Ensure content is scrollable
+    paddingBottom: scaleSize(20), // Padding for bottom content
   },
   profileInfo: {
     flexDirection: 'row',
